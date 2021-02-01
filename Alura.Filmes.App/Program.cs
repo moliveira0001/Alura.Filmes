@@ -3,6 +3,7 @@ using Alura.Filmes.App.Extensions;
 using Alura.Filmes.App.Negocio;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Data.SqlClient;
 using System.Linq;
 
 namespace Alura.Filmes.App
@@ -63,7 +64,7 @@ namespace Alura.Filmes.App
                 //}
 
 
-               // var idioma = new Idioma { Nome = "English" };
+                // var idioma = new Idioma { Nome = "English" };
 
                 //var filme = new Filme();
                 //filme.Titulo = "Cassino Royale";
@@ -78,12 +79,60 @@ namespace Alura.Filmes.App
                 //contexto.SaveChanges();
 
 
-                var filmeInserido = contexto.Filmes.First(f => f.Titulo == "Cassino Royale");
-                Console.WriteLine(filmeInserido.Classificacao.ParaString());
+                //var filmeInserido = contexto.Filmes.First(f => f.Titulo == "Cassino Royale");
+                //Console.WriteLine(filmeInserido.Classificacao.ParaString());
 
+                //var sql = @"select a.*
+                //from actor a
+                //  inner  join
+                //  top5_most_starred_actors filmes on filmes.actor_id = a.actor_id";
+
+
+                //var atoresMaisAtuantes = contexto.Atores
+                //    .Include(a => a.Filmografia)
+                //    .OrderByDescending(a => a.Filmografia.Count)
+                //    .Take(5);
+
+
+                //var atoresMaisAtuantes = contexto.Atores.FromSql(sql).Include(a => a.Filmografia);
+
+
+                //foreach (var ator in atoresMaisAtuantes)
+                //{
+                //    System.Console.WriteLine($"O ator {ator.PrimeiroNome} {ator.UltimoNome} atuou em {ator.Filmografia.Count} filmes");
+                //}
+
+                //Console.WriteLine("Clientes");
+                //foreach (var cliente in contexto.Clientes)
+                //{
+                //    Console.WriteLine(cliente);
+                //}
+
+                //Console.WriteLine("\nFuncionários");
+                //foreach (var func in contexto.Funcionarios)
+                //{
+                //    Console.WriteLine(func);
+                //}
+
+
+                var categ = "Action"; //36
+
+                var paramCateg = new SqlParameter("category_name", categ);
+
+                var paramTotal = new SqlParameter
+                {
+                    ParameterName = "@total_actors",
+                    Size = 4,
+                    Direction = System.Data.ParameterDirection.Output
+                };
+
+                contexto.Database
+                    .ExecuteSqlCommand("total_actors_from_given_category @category_name, @total_actors OUT", paramCateg, paramTotal);
+
+                System.Console.WriteLine($"O total de atores na categoria {categ} é de {paramTotal.Value}.");
+
+                Console.ReadKey();
             }
-
-            Console.ReadKey();
         }
     }
 }
